@@ -2,6 +2,7 @@ plugins {
     id 'org.springframework.boot' version '2.7.1'
     id 'io.spring.dependency-management' version '1.0.11.RELEASE'
     id 'java'
+    id 'org.openapi.generator' version '6.0.1'
 }
 
 group = 'dev.mamre'
@@ -14,10 +15,15 @@ repositories {
 
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+//    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'com.fasterxml.jackson.core:jackson-databind'
+    implementation 'org.openapitools:jackson-databind-nullable:0.2.2'
     implementation 'javax.validation:validation-api'
+    implementation 'org.springdoc:springdoc-openapi-ui:1.6.14' // Add this dependency
+    implementation 'org.springdoc:springdoc-openapi-data-rest:1.6.14' // Add this dependency
+
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
@@ -25,4 +31,28 @@ dependencies {
 
 test {
     useJUnitPlatform()
+}
+
+openApiGenerate {
+    generatorName = "spring"
+    inputSpec = "$rootDir/src/main/resources/api-spec.yaml" // Path to your OpenAPI spec file
+    outputDir = "$buildDir/generated" // Output directory for generated code
+    apiPackage = "dev.mamre.api"
+    modelPackage = "dev.mamre.api.model"
+    configOptions = [
+            dateLibrary: "java8",
+            interfaceOnly: "true"
+    ]
+}
+
+sourceSets {
+    main {
+        java {
+            srcDir "$buildDir/generated/src/main/java"
+        }
+    }
+}
+
+compileJava {
+    dependsOn tasks.openApiGenerate
 }
