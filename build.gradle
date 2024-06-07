@@ -38,9 +38,16 @@ openApiGenerate {
     inputSpec = "$rootDir/src/main/resources/api-spec.yaml" // Path to your OpenAPI spec file
     outputDir = "$buildDir/generated" // Output directory for generated code
     apiPackage = "dev.mamre.api"
-    modelPackage = "dev.mamre.api.model"
+    modelPackage = "dev.mamre.api.dto"
+    modelNameSuffix = "Dto"
     configOptions = [
+            delegatePattern: "true",
+            openApiNullable: "false",
+//            useTags: "true",
+            implicitHeaders: "true",
             dateLibrary: "java8",
+            interfaceOnly: "true",
+            unhandledException: "true",
             interfaceOnly: "true"
     ]
 }
